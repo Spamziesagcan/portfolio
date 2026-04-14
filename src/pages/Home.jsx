@@ -39,7 +39,7 @@ function Home() {
 					<div
 						onMouseEnter={() => setIsHeroHovered(true)}
 						onMouseLeave={() => setIsHeroHovered(false)}
-						className="relative flex h-[260px] w-[260px] shrink-0 items-center justify-center"
+						className="relative flex h-[280px] w-[280px] shrink-0 items-center justify-center"
 					>
 						<HeroWaveform isHovered={isHeroHovered} />
 

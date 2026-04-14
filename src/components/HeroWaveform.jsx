@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState } from 'react'
 
 const BAR_COUNT = 200
 const BAR_WIDTH = 2.25
-const CANVAS_SIZE = 260
+const CANVAS_SIZE = 280
 const CENTER = CANVAS_SIZE / 2
-const INNER_RADIUS = 84
+const INNER_RADIUS = 96
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value))
@@ -68,8 +68,8 @@ function HeroWaveform({ isHovered = false, className = '' }) {
     >
       <svg
         viewBox={`0 0 ${CANVAS_SIZE} ${CANVAS_SIZE}`}
-        preserveAspectRatio="none"
-        className="h-full w-full"
+        preserveAspectRatio="xMidYMid meet"
+        className="h-full w-full overflow-visible"
       >
         {bars.map((bar, index) => {
           const swell = Math.sin(waveTime * bar.speed + bar.phase)
@@ -82,22 +82,21 @@ function HeroWaveform({ isHovered = false, className = '' }) {
           )
 
           return (
-            <rect
+            <g
               key={index}
-              x={CENTER - BAR_WIDTH / 2}
-              y={CENTER - INNER_RADIUS - barHeight}
-              width={BAR_WIDTH}
-              height={barHeight}
-              rx="0.35"
-              fill="#1DB954"
-              fillOpacity={bar.opacity}
-              transform={`rotate(${bar.angle} ${CENTER} ${CENTER})`}
-              style={{
-                transformBox: 'fill-box',
-                transformOrigin: 'center bottom',
-                transition: 'opacity 120ms linear',
-              }}
-            />
+              transform={`translate(${CENTER} ${CENTER}) rotate(${bar.angle}) translate(0 ${-INNER_RADIUS})`}
+            >
+              <rect
+                x={-BAR_WIDTH / 2}
+                y={-barHeight}
+                width={BAR_WIDTH}
+                height={barHeight}
+                rx="0.35"
+                fill="#1DB954"
+                fillOpacity={bar.opacity}
+                style={{ transition: 'opacity 120ms linear' }}
+              />
+            </g>
           )
         })}
       </svg>
