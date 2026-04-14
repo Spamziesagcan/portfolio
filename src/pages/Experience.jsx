@@ -120,7 +120,7 @@ function Experience() {
 									<Fragment key={item.id}>
 										<tr
 											onClick={() => setExpandedId(expanded ? '' : item.id)}
-											className="group cursor-pointer border-b border-white/5 transition-colors hover:bg-[#282828]"
+											className="hoverable group cursor-pointer border-b border-white/5 transition-colors hover:bg-[#282828]"
 										>
 											<td className="px-3 py-3">
 												<div className="relative flex h-6 w-6 items-center justify-center text-sm text-[#B3B3B3]">
@@ -178,7 +178,7 @@ function Experience() {
 															href={item.website}
 															target="_blank"
 															rel="noreferrer"
-															className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-black transition-opacity hover:opacity-90"
+															className="hoverable inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-black transition-opacity hover:opacity-90"
 														>
 															Company Website
 															<ExternalLink className="h-4 w-4" />

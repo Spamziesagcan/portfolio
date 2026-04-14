@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 
 const BAR_COUNT = 200
-const PLAYHEAD_DURATION_MS = 8000
-const BAR_WIDTH = 0.7
-const SVG_HEIGHT = 100
+const BAR_WIDTH = 2.25
+const CANVAS_SIZE = 260
+const CENTER = CANVAS_SIZE / 2
+const INNER_RADIUS = 84
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value))
@@ -16,13 +17,15 @@ function HeroWaveform({ isHovered = false, className = '' }) {
     return Array.from({ length: BAR_COUNT }, (_, index) => {
       const progress = index / (BAR_COUNT - 1)
 
-      const baseHeight = 18 + Math.random() * 26
-      const amplitude = 9 + Math.random() * 20
-      const secondaryAmplitude = 3 + Math.random() * 8
-      const phase = progress * Math.PI * 1.5 + Math.random() * Math.PI * 2
+      const baseHeight = 8 + Math.random() * 14
+      const amplitude = 7 + Math.random() * 13
+      const secondaryAmplitude = 2 + Math.random() * 6
+      const phase = progress * Math.PI * 2.2 + Math.random() * Math.PI * 2
       const secondaryPhase = Math.random() * Math.PI * 2
-      const speed = 0.55 + Math.random() * 0.75
-      const secondarySpeed = speed * (1.55 + Math.random() * 0.35)
+      const speed = 0.32 + Math.random() * 0.55
+      const secondarySpeed = speed * (1.45 + Math.random() * 0.45)
+      const opacity = 0.68 + Math.random() * 0.32
+      const angle = (index / BAR_COUNT) * 360
 
       return {
         baseHeight,
@@ -32,7 +35,8 @@ function HeroWaveform({ isHovered = false, className = '' }) {
         secondaryPhase,
         speed,
         secondarySpeed,
-        opacity: 0.75 + Math.random() * 0.25,
+        opacity,
+        angle,
       }
     })
   }, [])
@@ -53,8 +57,6 @@ function HeroWaveform({ isHovered = false, className = '' }) {
     }
   }, [])
 
-  const playheadProgress = (animationTime % PLAYHEAD_DURATION_MS) / PLAYHEAD_DURATION_MS
-  const activeBarIndex = Math.floor(playheadProgress * BAR_COUNT)
   const waveTime = animationTime / 1000
 
   return (
@@ -64,19 +66,8 @@ function HeroWaveform({ isHovered = false, className = '' }) {
       } ${className}`}
       aria-hidden="true"
     >
-      <style>{`
-        @keyframes hero-waveform-playhead {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(calc(100% - 2px));
-          }
-        }
-      `}</style>
-
       <svg
-        viewBox={`0 0 ${BAR_COUNT} ${SVG_HEIGHT}`}
+        viewBox={`0 0 ${CANVAS_SIZE} ${CANVAS_SIZE}`}
         preserveAspectRatio="none"
         className="h-full w-full"
       >
@@ -87,34 +78,29 @@ function HeroWaveform({ isHovered = false, className = '' }) {
           const barHeight = clamp(
             bar.baseHeight + swell * bar.amplitude * hoverMultiplier + secondarySwell * bar.secondaryAmplitude * hoverMultiplier,
             6,
-            SVG_HEIGHT - 6,
+            28,
           )
-          const x = index + (1 - BAR_WIDTH) / 2
-          const isPlayed = index <= activeBarIndex
 
           return (
             <rect
               key={index}
-              x={x}
-              y={SVG_HEIGHT - barHeight}
+              x={CENTER - BAR_WIDTH / 2}
+              y={CENTER - INNER_RADIUS - barHeight}
               width={BAR_WIDTH}
               height={barHeight}
               rx="0.35"
-              fill={isPlayed ? '#FFFFFF' : '#535353'}
+              fill="#1DB954"
+              fillOpacity={bar.opacity}
+              transform={`rotate(${bar.angle} ${CENTER} ${CENTER})`}
               style={{
                 transformBox: 'fill-box',
                 transformOrigin: 'center bottom',
-                transition: 'fill 120ms linear',
+                transition: 'opacity 120ms linear',
               }}
             />
           )
         })}
       </svg>
-
-      <div
-        className="absolute top-0 bottom-0 w-[2px] bg-white/60"
-        style={{ animation: `hero-waveform-playhead ${PLAYHEAD_DURATION_MS}ms linear infinite` }}
-      />
     </div>
   )
 }

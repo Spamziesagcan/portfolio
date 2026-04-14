@@ -140,7 +140,7 @@ function Projects() {
 							type="button"
 							onClick={() => setActiveFilter(filter)}
 							className={[
-								'rounded-full px-4 py-2 text-sm font-semibold transition-colors',
+								'hoverable rounded-full px-4 py-2 text-sm font-semibold transition-colors',
 								isActive
 									? 'bg-[#1DB954] text-black'
 									: 'bg-[#282828] text-[#B3B3B3] hover:text-white',
@@ -163,7 +163,7 @@ function Projects() {
 									type="button"
 									onClick={() => setSelectedProject(project)}
 									className={[
-										'group rounded-lg bg-[#181818] p-3 text-left transition-all duration-300',
+										'hoverable group rounded-lg bg-[#181818] p-3 text-left transition-all duration-300',
 										'hover:bg-[#333333]',
 										isSelected ? 'ring-1 ring-[#1DB954]/70' : 'ring-1 ring-transparent',
 									].join(' ')}
@@ -222,7 +222,7 @@ function Projects() {
 							href={selectedProject.github}
 							target="_blank"
 							rel="noreferrer"
-							className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-black transition-opacity hover:opacity-90"
+									className="hoverable rounded-full bg-white px-4 py-2 text-sm font-semibold text-black transition-opacity hover:opacity-90"
 						>
 							GitHub
 						</a>
@@ -230,7 +230,7 @@ function Projects() {
 							href={selectedProject.demo}
 							target="_blank"
 							rel="noreferrer"
-							className="rounded-full bg-[#1DB954] px-4 py-2 text-sm font-semibold text-black transition-opacity hover:opacity-90"
+									className="hoverable rounded-full bg-[#1DB954] px-4 py-2 text-sm font-semibold text-black transition-opacity hover:opacity-90"
 						>
 							Live Demo
 						</a>

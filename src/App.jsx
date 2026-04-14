@@ -9,6 +9,7 @@ import Projects from './pages/Projects'
 import Experience from './pages/Experience'
 import MobileBottomNav from './components/MobileBottomNav'
 import LoadingScreen from './components/LoadingScreen'
+import CustomCursor from './components/CustomCursor'
 
 function App() {
   const mainScrollRef = useRef(null)
@@ -24,12 +25,22 @@ function App() {
   }, [])
 
   if (isLoading) {
-    return <LoadingScreen />
+    return (
+      <>
+        <style>{`* { cursor: none !important; }`}</style>
+        <CustomCursor />
+        <LoadingScreen />
+      </>
+    )
   }
 
   return (
-    <BrowserRouter>
-      <div className="h-screen bg-[#121212] text-white flex flex-col">
+    <>
+      <style>{`* { cursor: none !important; }`}</style>
+      <CustomCursor />
+
+      <BrowserRouter>
+        <div className="h-screen bg-[#121212] text-white flex flex-col">
         <section className="flex-1 min-h-0 flex flex-row bg-[#121212]">
           <aside className="hidden lg:block w-[240px] shrink-0 bg-[#121212] border-r border-white/10">
             <Sidebar />
@@ -63,7 +74,7 @@ function App() {
                 type="button"
                 aria-label="Open sidebar"
                 onClick={() => setIsSidebarOpen(true)}
-                className="inline-flex items-center gap-2 rounded-md border border-white/15 px-3 py-1.5 text-sm text-white"
+                className="hoverable inline-flex items-center gap-2 rounded-md border border-white/15 px-3 py-1.5 text-sm text-white"
               >
                 <Menu className="h-4 w-4" />
                 Menu
@@ -73,7 +84,7 @@ function App() {
                   type="button"
                   aria-label="Close sidebar"
                   onClick={() => setIsSidebarOpen(false)}
-                  className="inline-flex rounded-md border border-white/15 p-2 text-white"
+                  className="hoverable inline-flex rounded-md border border-white/15 p-2 text-white"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -116,13 +127,14 @@ function App() {
           </main>
         </section>
 
-        <footer className="h-[136px] md:h-[90px] shrink-0">
-          <PlayerBar scrollContainerRef={mainScrollRef} />
-        </footer>
+          <footer className="h-[136px] md:h-[90px] shrink-0">
+            <PlayerBar scrollContainerRef={mainScrollRef} />
+          </footer>
 
-        <MobileBottomNav />
-      </div>
-    </BrowserRouter>
+          <MobileBottomNav />
+        </div>
+      </BrowserRouter>
+    </>
   )
 }
 

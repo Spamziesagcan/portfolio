@@ -28,7 +28,7 @@ function Sidebar({ className = '', onNavigate }) {
   ]
 
   const baseLinkClasses =
-    'group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-colors'
+    'hoverable group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-colors'
 
   const getPrimaryNavClasses = ({ isActive }) =>
     [
@@ -40,7 +40,7 @@ function Sidebar({ className = '', onNavigate }) {
 
   const getPlaylistClasses = ({ isActive }) =>
     [
-      'group flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors',
+      'hoverable group flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors',
       isActive
         ? 'text-white'
         : 'text-[#B3B3B3] hover:text-white focus-visible:text-white',

@@ -81,7 +81,7 @@ function PlayerBar({ scrollContainerRef }) {
           <button
             type="button"
             aria-label="Like current track"
-            className="hidden md:block text-[#B3B3B3] transition-colors hover:text-white"
+            className="hoverable hidden md:block text-[#B3B3B3] transition-colors hover:text-white"
           >
             <Heart className="h-4 w-4" />
           </button>
@@ -90,7 +90,7 @@ function PlayerBar({ scrollContainerRef }) {
             type="button"
             aria-label={isPlaying ? 'Pause' : 'Play'}
             onClick={togglePlay}
-            className="ml-auto inline-flex h-9 w-9 items-center justify-center rounded-full bg-white text-black md:hidden"
+            className="hoverable ml-auto inline-flex h-9 w-9 items-center justify-center rounded-full bg-white text-black md:hidden"
           >
             {isPlaying ? <Pause className="h-4 w-4 fill-current" /> : <Play className="h-4 w-4 fill-current" />}
           </button>
@@ -104,13 +104,13 @@ function PlayerBar({ scrollContainerRef }) {
 
             <div className="relative z-10 flex flex-col items-center gap-2">
               <div className="flex items-center gap-4 text-[#B3B3B3]">
-                <button type="button" aria-label="Shuffle" className="hover:text-white">
+                <button type="button" aria-label="Shuffle" className="hoverable hover:text-white">
                   <Shuffle className="h-4 w-4" />
                 </button>
                 <button
                   type="button"
                   aria-label="Previous section"
-                  className="hover:text-white"
+                  className="hoverable hover:text-white"
                   onClick={() => navigate(previousPath)}
                 >
                   <SkipBack className="h-4 w-4" />
@@ -119,19 +119,19 @@ function PlayerBar({ scrollContainerRef }) {
                   type="button"
                   aria-label={isPlaying ? 'Pause' : 'Play'}
                   onClick={togglePlay}
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-black"
+                  className="hoverable inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-black"
                 >
                   {isPlaying ? <Pause className="h-4 w-4 fill-current" /> : <Play className="h-4 w-4 fill-current" />}
                 </button>
                 <button
                   type="button"
                   aria-label="Next section"
-                  className="hover:text-white"
+                  className="hoverable hover:text-white"
                   onClick={() => navigate(nextPath)}
                 >
                   <SkipForward className="h-4 w-4" />
                 </button>
-                <button type="button" aria-label="Repeat" className="hover:text-white">
+                <button type="button" aria-label="Repeat" className="hoverable hover:text-white">
                   <Repeat className="h-4 w-4" />
                 </button>
               </div>

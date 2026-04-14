@@ -10,7 +10,7 @@ function MainContent({ title, description }) {
         {Array.from({ length: 12 }).map((_, index) => (
           <motion.div
             key={index}
-            className="h-20 rounded-lg bg-spotify-card/70 border border-white/5"
+            className="hoverable h-20 rounded-lg bg-spotify-card/70 border border-white/5"
             whileHover={{ scale: 1.04 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
           />

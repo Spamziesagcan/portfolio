@@ -30,7 +30,7 @@ function MobileBottomNav() {
               }}
               className={({ isActive }) =>
                 [
-                  'flex flex-col items-center justify-center gap-1 text-[11px] transition-colors',
+                  'hoverable flex flex-col items-center justify-center gap-1 text-[11px] transition-colors',
                   isActive ? 'text-white' : 'text-[#B3B3B3] hover:text-white',
                 ].join(' ')
               }

@@ -29,24 +29,26 @@ function getGreetingByTime() {
 }
 
 function Home() {
-  const [isHeroHovered, setIsHeroHovered] = useState(false)
+	const [isHeroHovered, setIsHeroHovered] = useState(false)
 	const greeting = getGreetingByTime()
 
 	return (
 		<PageWrapper className="min-h-full bg-[#121212] text-white">
-			<header
-				onMouseEnter={() => setIsHeroHovered(true)}
-				onMouseLeave={() => setIsHeroHovered(false)}
-				className="relative isolate overflow-hidden bg-gradient-to-b from-[#3a2d6f] via-[#223b66] to-[#121212] px-8 pt-10 pb-8"
-			>
-				<HeroWaveform isHovered={isHeroHovered} />
+			<header className="relative isolate overflow-hidden bg-gradient-to-b from-[#3a2d6f] via-[#223b66] to-[#121212] px-8 pt-10 pb-8">
+				<div className="relative z-10 flex flex-col items-center gap-6 sm:flex-row sm:items-center">
+					<div
+						onMouseEnter={() => setIsHeroHovered(true)}
+						onMouseLeave={() => setIsHeroHovered(false)}
+						className="relative flex h-[260px] w-[260px] shrink-0 items-center justify-center"
+					>
+						<HeroWaveform isHovered={isHeroHovered} />
 
-				<div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-end">
-					<img
-						src={heroImage}
-						alt="Profile"
-						className="h-36 w-36 rounded-full object-cover border-4 border-white/20 shadow-2xl"
-					/>
+						<img
+							src={heroImage}
+							alt="Profile"
+							className="relative z-10 h-36 w-36 rounded-full border-4 border-white/20 object-cover shadow-2xl"
+						/>
+					</div>
 
 					<div>
 						<p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#B3B3B3]">
@@ -82,7 +84,7 @@ function Home() {
 						{featuredCards.map((card) => (
 							<motion.article
 								key={card.title}
-								className="group relative h-40 w-40 shrink-0 rounded-xl bg-[#282828] p-4 transition-all duration-300 hover:brightness-110"
+								className="hoverable group relative h-40 w-40 shrink-0 rounded-xl bg-[#282828] p-4 transition-all duration-300 hover:brightness-110"
 								whileHover={{ scale: 1.04 }}
 								transition={{ duration: 0.2, ease: 'easeOut' }}
 							>
@@ -92,7 +94,7 @@ function Home() {
 								<button
 									type="button"
 									aria-label={`Play ${card.title}`}
-									className="absolute bottom-4 right-4 inline-flex h-10 w-10 translate-y-2 items-center justify-center rounded-full bg-[#1DB954] text-black opacity-0 shadow-lg transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"
+									className="hoverable absolute bottom-4 right-4 inline-flex h-10 w-10 translate-y-2 items-center justify-center rounded-full bg-[#1DB954] text-black opacity-0 shadow-lg transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"
 								>
 									<Play className="ml-0.5 h-5 w-5 fill-current" />
 								</button>
