@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 
 const BAR_COUNT = 200
 const PLAYHEAD_DURATION_MS = 8000
-const BAR_GAP = 1
 const BAR_WIDTH = 0.7
 const SVG_HEIGHT = 100
 
@@ -11,54 +10,52 @@ function clamp(value, min, max) {
 }
 
 function HeroWaveform({ isHovered = false, className = '' }) {
-  const [playheadProgress, setPlayheadProgress] = useState(0)
+  const [animationTime, setAnimationTime] = useState(0)
 
   const bars = useMemo(() => {
     return Array.from({ length: BAR_COUNT }, (_, index) => {
       const progress = index / (BAR_COUNT - 1)
-      const sineWave = Math.sin(progress * Math.PI * 4.4 - Math.PI / 2)
-      const detailWave = Math.sin(progress * Math.PI * 13.2 + 1.15)
-      const randomLift = Math.random() * 0.22
-      const envelope = 0.28 + Math.sin(progress * Math.PI) * 0.72
 
-      const normalized = clamp(
-        envelope * 0.52 + (sineWave * 0.5 + 0.5) * 0.3 + (detailWave * 0.5 + 0.5) * 0.18 + randomLift,
-        0.08,
-        1,
-      )
-
-      const scaleLow = clamp(0.76 + Math.random() * 0.08, 0.72, 0.86)
-      const scaleHigh = clamp(1.02 + Math.random() * 0.1, 1.02, 1.16)
+      const baseHeight = 18 + Math.random() * 26
+      const amplitude = 9 + Math.random() * 20
+      const secondaryAmplitude = 3 + Math.random() * 8
+      const phase = progress * Math.PI * 1.5 + Math.random() * Math.PI * 2
+      const secondaryPhase = Math.random() * Math.PI * 2
+      const speed = 0.55 + Math.random() * 0.75
+      const secondarySpeed = speed * (1.55 + Math.random() * 0.35)
 
       return {
-        height: 12 + Math.round(normalized * 84),
-        delay: index * 5,
-        waveDelay: -index * 38,
-        waveDuration: 3600 + Math.random() * 1800,
-        scaleLow,
-        scaleHigh,
+        baseHeight,
+        amplitude,
+        secondaryAmplitude,
+        phase,
+        secondaryPhase,
+        speed,
+        secondarySpeed,
         opacity: 0.75 + Math.random() * 0.25,
       }
     })
   }, [])
 
   useEffect(() => {
+    let rafId = 0
     const startTime = performance.now()
 
-    const updatePlayhead = () => {
-      const elapsed = (performance.now() - startTime) % PLAYHEAD_DURATION_MS
-      setPlayheadProgress(elapsed / PLAYHEAD_DURATION_MS)
+    const frame = () => {
+      setAnimationTime(performance.now() - startTime)
+      rafId = window.requestAnimationFrame(frame)
     }
 
-    updatePlayhead()
-    const intervalId = window.setInterval(updatePlayhead, 32)
+    rafId = window.requestAnimationFrame(frame)
 
     return () => {
-      window.clearInterval(intervalId)
+      window.cancelAnimationFrame(rafId)
     }
   }, [])
 
+  const playheadProgress = (animationTime % PLAYHEAD_DURATION_MS) / PLAYHEAD_DURATION_MS
   const activeBarIndex = Math.floor(playheadProgress * BAR_COUNT)
+  const waveTime = animationTime / 1000
 
   return (
     <div
@@ -68,26 +65,6 @@ function HeroWaveform({ isHovered = false, className = '' }) {
       aria-hidden="true"
     >
       <style>{`
-        @keyframes hero-waveform-swell {
-          0%,
-          100% {
-            transform: scaleY(var(--wave-scale-low));
-          }
-          50% {
-            transform: scaleY(var(--wave-scale-high));
-          }
-        }
-
-        @keyframes hero-waveform-swell-hover {
-          0%,
-          100% {
-            transform: scaleY(var(--wave-scale-hover-low));
-          }
-          50% {
-            transform: scaleY(var(--wave-scale-hover-high));
-          }
-        }
-
         @keyframes hero-waveform-playhead {
           0% {
             transform: translateX(0);
@@ -104,7 +81,14 @@ function HeroWaveform({ isHovered = false, className = '' }) {
         className="h-full w-full"
       >
         {bars.map((bar, index) => {
-          const barHeight = bar.height
+          const swell = Math.sin(waveTime * bar.speed + bar.phase)
+          const secondarySwell = Math.sin(waveTime * bar.secondarySpeed + bar.secondaryPhase)
+          const hoverMultiplier = isHovered ? 1.12 : 1
+          const barHeight = clamp(
+            bar.baseHeight + swell * bar.amplitude * hoverMultiplier + secondarySwell * bar.secondaryAmplitude * hoverMultiplier,
+            6,
+            SVG_HEIGHT - 6,
+          )
           const x = index + (1 - BAR_WIDTH) / 2
           const isPlayed = index <= activeBarIndex
 
@@ -120,14 +104,7 @@ function HeroWaveform({ isHovered = false, className = '' }) {
               style={{
                 transformBox: 'fill-box',
                 transformOrigin: 'center bottom',
-                '--wave-scale-low': bar.scaleLow,
-                '--wave-scale-high': bar.scaleHigh,
-                '--wave-scale-hover-low': Math.max(0.7, bar.scaleLow - 0.04),
-                '--wave-scale-hover-high': bar.scaleHigh + 0.06,
-                animation: isHovered
-                  ? `hero-waveform-swell-hover ${Math.round(bar.waveDuration * 0.82)}ms ease-in-out infinite`
-                  : `hero-waveform-swell ${Math.round(bar.waveDuration)}ms ease-in-out infinite`,
-                animationDelay: `${bar.waveDelay}ms`,
+                transition: 'fill 120ms linear',
               }}
             />
           )
