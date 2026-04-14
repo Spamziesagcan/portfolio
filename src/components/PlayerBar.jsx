@@ -11,6 +11,7 @@ import {
   Volume2,
 } from 'lucide-react'
 import useScrollProgress from '../hooks/useScrollProgress'
+import AudioVisualizer from './AudioVisualizer'
 
 const routeOrder = ['/', '/projects', '/skills', '/experience', '/contact']
 
@@ -70,6 +71,8 @@ function PlayerBar({ scrollContainerRef }) {
             aria-hidden="true"
           />
 
+          <AudioVisualizer isPlaying={isPlaying} height={20} barCount={12} />
+
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold text-white">{currentPage.title}</p>
             <p className="truncate text-xs text-[#B3B3B3]">Your Name</p>
@@ -94,50 +97,58 @@ function PlayerBar({ scrollContainerRef }) {
         </section>
 
         <section className="hidden w-full max-w-xl flex-col items-center justify-center gap-2 md:flex">
-          <div className="flex items-center gap-4 text-[#B3B3B3]">
-            <button type="button" aria-label="Shuffle" className="hover:text-white">
-              <Shuffle className="h-4 w-4" />
-            </button>
-            <button
-              type="button"
-              aria-label="Previous section"
-              className="hover:text-white"
-              onClick={() => navigate(previousPath)}
-            >
-              <SkipBack className="h-4 w-4" />
-            </button>
-            <button
-              type="button"
-              aria-label={isPlaying ? 'Pause' : 'Play'}
-              onClick={togglePlay}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-black"
-            >
-              {isPlaying ? <Pause className="h-4 w-4 fill-current" /> : <Play className="h-4 w-4 fill-current" />}
-            </button>
-            <button
-              type="button"
-              aria-label="Next section"
-              className="hover:text-white"
-              onClick={() => navigate(nextPath)}
-            >
-              <SkipForward className="h-4 w-4" />
-            </button>
-            <button type="button" aria-label="Repeat" className="hover:text-white">
-              <Repeat className="h-4 w-4" />
-            </button>
-          </div>
+          <div className="relative w-full overflow-hidden rounded-full">
+            <div className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 justify-center overflow-hidden">
+              <AudioVisualizer isPlaying={isPlaying} height={60} opacity={0.3} />
+            </div>
 
-          <div className="flex w-full items-center gap-2 text-[11px] text-[#B3B3B3]">
-            <span className="w-8 text-right">{scrollPercent}%</span>
-            <div className="relative h-1 flex-1 rounded-full bg-white/20">
-              <div
-                className="relative h-1 rounded-full bg-[#1DB954]"
-                style={{ width: `${progress * 100}%` }}
-              >
-                <span className="absolute -right-1.5 -top-1 h-3 w-3 rounded-full bg-[#1DB954]" />
+            <div className="relative z-10 flex flex-col items-center gap-2">
+              <div className="flex items-center gap-4 text-[#B3B3B3]">
+                <button type="button" aria-label="Shuffle" className="hover:text-white">
+                  <Shuffle className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Previous section"
+                  className="hover:text-white"
+                  onClick={() => navigate(previousPath)}
+                >
+                  <SkipBack className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  aria-label={isPlaying ? 'Pause' : 'Play'}
+                  onClick={togglePlay}
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-black"
+                >
+                  {isPlaying ? <Pause className="h-4 w-4 fill-current" /> : <Play className="h-4 w-4 fill-current" />}
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next section"
+                  className="hover:text-white"
+                  onClick={() => navigate(nextPath)}
+                >
+                  <SkipForward className="h-4 w-4" />
+                </button>
+                <button type="button" aria-label="Repeat" className="hover:text-white">
+                  <Repeat className="h-4 w-4" />
+                </button>
+              </div>
+
+              <div className="flex w-full items-center gap-2 text-[11px] text-[#B3B3B3]">
+                <span className="w-8 text-right">{scrollPercent}%</span>
+                <div className="relative h-1 flex-1 rounded-full bg-white/20">
+                  <div
+                    className="relative h-1 rounded-full bg-[#1DB954]"
+                    style={{ width: `${progress * 100}%` }}
+                  >
+                    <span className="absolute -right-1.5 -top-1 h-3 w-3 rounded-full bg-[#1DB954]" />
+                  </div>
+                </div>
+                <span className="w-10 text-left">100%</span>
               </div>
             </div>
-            <span className="w-10 text-left">100%</span>
           </div>
         </section>
 

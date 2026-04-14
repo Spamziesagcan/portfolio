@@ -13,20 +13,26 @@ function randomFloat(min, max, precision = 2) {
   return Number((Math.random() * (max - min) + min).toFixed(precision))
 }
 
-function AudioVisualizer({ isPlaying, height = 40, color = '#1DB954' }) {
+function AudioVisualizer({
+  isPlaying,
+  height = 40,
+  color = '#1DB954',
+  barCount = BAR_COUNT,
+  opacity = 1,
+}) {
   const trackHeight = Math.max(COLLAPSED_HEIGHT, height)
   const [isBursting, setIsBursting] = useState(false)
   const burstTimerRef = useRef(null)
 
   const bars = useMemo(
     () =>
-      Array.from({ length: BAR_COUNT }, () => ({
+      Array.from({ length: barCount }, () => ({
         peakHeight: randomBetween(COLLAPSED_HEIGHT, trackHeight),
         duration: randomFloat(0.4, 1.2),
         opacity: randomFloat(0.72, 1),
         delay: randomFloat(0, 0.25),
       })),
-    [trackHeight],
+    [barCount, trackHeight],
   )
 
   const triggerBurst = useCallback(() => {
@@ -52,7 +58,7 @@ function AudioVisualizer({ isPlaying, height = 40, color = '#1DB954' }) {
   return (
     <div
       className="inline-flex items-end gap-[2px]"
-      style={{ height: trackHeight }}
+      style={{ height: trackHeight, opacity }}
       onMouseEnter={triggerBurst}
       onFocus={triggerBurst}
       aria-hidden="true"

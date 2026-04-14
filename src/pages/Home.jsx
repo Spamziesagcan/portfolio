@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { Play } from 'lucide-react'
 import { motion } from 'framer-motion'
 import heroImage from '../assets/hero.png'
 import PageWrapper from '../components/PageWrapper'
+import HeroWaveform from '../components/HeroWaveform'
 
 const featuredCards = [
 	{
@@ -27,12 +29,19 @@ function getGreetingByTime() {
 }
 
 function Home() {
+  const [isHeroHovered, setIsHeroHovered] = useState(false)
 	const greeting = getGreetingByTime()
 
 	return (
 		<PageWrapper className="min-h-full bg-[#121212] text-white">
-			<header className="bg-gradient-to-b from-[#3a2d6f] via-[#223b66] to-[#121212] px-8 pt-10 pb-8">
-				<div className="flex flex-col gap-6 sm:flex-row sm:items-end">
+			<header
+				onMouseEnter={() => setIsHeroHovered(true)}
+				onMouseLeave={() => setIsHeroHovered(false)}
+				className="relative isolate overflow-hidden bg-gradient-to-b from-[#3a2d6f] via-[#223b66] to-[#121212] px-8 pt-10 pb-8"
+			>
+				<HeroWaveform isHovered={isHeroHovered} />
+
+				<div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-end">
 					<img
 						src={heroImage}
 						alt="Profile"
