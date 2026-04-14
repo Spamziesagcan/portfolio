@@ -1,47 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-const BAR_COUNT = 200
-const BAR_WIDTH = 1.8
 const CANVAS_SIZE = 320
-const CENTER = CANVAS_SIZE / 2
-const INNER_RADIUS = 60
-
-function clamp(value, min, max) {
-  return Math.min(max, Math.max(min, value))
-}
 
 function HeroWaveform({ isHovered = false, className = '' }) {
   const [animationTime, setAnimationTime] = useState(0)
-
-  const bars = useMemo(() => {
-    return Array.from({ length: BAR_COUNT }, (_, index) => {
-      const progress = index / (BAR_COUNT - 1)
-
-      const baseHeight = 4 + Math.random() * 10
-      const amplitude = 5 + Math.random() * 11
-      const secondaryAmplitude = 2 + Math.random() * 4
-      const phase = progress * Math.PI * 2.2 + Math.random() * Math.PI * 2
-      const secondaryPhase = Math.random() * Math.PI * 2
-      const speed = 0.32 + Math.random() * 0.55
-      const secondarySpeed = speed * (1.45 + Math.random() * 0.45)
-      const opacity = 0.68 + Math.random() * 0.32
-      const angle = (index / BAR_COUNT) * 360
-      const hue = (index / BAR_COUNT) * 360
-
-      return {
-        baseHeight,
-        amplitude,
-        secondaryAmplitude,
-        phase,
-        secondaryPhase,
-        speed,
-        secondarySpeed,
-        opacity,
-        angle,
-        hue,
-      }
-    })
-  }, [])
 
   useEffect(() => {
     let rafId = 0
@@ -59,78 +21,70 @@ function HeroWaveform({ isHovered = false, className = '' }) {
     }
   }, [])
 
-  const waveTime = animationTime / 1000
-  const hueShift = waveTime * 28
+  const rotation = animationTime * 0.03
+  const wobble = Math.sin(animationTime / 850) * 1.4
+  const pulse = 1 + Math.sin(animationTime / 1200) * 0.012 + (isHovered ? 0.018 : 0)
+
+  const spectrumStyle = {
+    background: `conic-gradient(from ${rotation}deg,
+      #ff2bb5 0deg,
+      #9b5cff 42deg,
+      #33c3ff 86deg,
+      #20e3b2 130deg,
+      #b7ff3d 166deg,
+      #ffd93d 206deg,
+      #ff9f1a 248deg,
+      #ff4d6d 302deg,
+      #ff2bb5 360deg)`,
+  }
+
+  const ringMask =
+    'radial-gradient(circle at center, transparent 0 44%, black 46% 56%, transparent 58%)'
+  const glowMask =
+    'radial-gradient(circle at center, transparent 0 40%, black 42% 60%, transparent 62%)'
 
   return (
     <div
-      className={`pointer-events-none absolute inset-0 w-full overflow-hidden transition-opacity duration-300 ${
-        isHovered ? 'opacity-40' : 'opacity-[0.15]'
+      className={`pointer-events-none absolute inset-0 flex items-center justify-center overflow-visible transition-opacity duration-300 ${
+        isHovered ? 'opacity-60' : 'opacity-[0.18]'
       } ${className}`}
       aria-hidden="true"
     >
-      <svg
-        viewBox={`0 0 ${CANVAS_SIZE} ${CANVAS_SIZE}`}
-        preserveAspectRatio="xMidYMid meet"
-        className="h-full w-full overflow-visible"
-      >
-        <defs>
-          <filter id="hero-waveform-glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="3.25" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
+      <div
+        className="absolute inset-0 rounded-full blur-2xl"
+        style={{
+          ...spectrumStyle,
+          WebkitMask: glowMask,
+          mask: glowMask,
+          transform: `scale(${1.04 * pulse}) rotate(${wobble}deg)`,
+          opacity: isHovered ? 0.5 : 0.28,
+          filter: 'saturate(1.7) brightness(1.15)',
+          mixBlendMode: 'screen',
+        }}
+      />
 
-        {bars.map((bar, index) => {
-          const swell = Math.sin(waveTime * bar.speed + bar.phase)
-          const secondarySwell = Math.sin(waveTime * bar.secondarySpeed + bar.secondaryPhase)
-          const hoverMultiplier = isHovered ? 1.12 : 1
-          const radialWobble = Math.sin(waveTime * 0.9 + bar.phase) * 5
-          const spiralTwist = Math.sin(waveTime * 0.35 + index * 0.1) * 4
-          const barHeight = clamp(
-            bar.baseHeight + swell * bar.amplitude * hoverMultiplier + secondarySwell * bar.secondaryAmplitude * hoverMultiplier,
-            4,
-            18,
-          )
-          const color = `hsl(${(bar.hue + hueShift) % 360}, 100%, ${isHovered ? 70 : 62}%)`
-          const glowColor = `hsl(${(bar.hue + hueShift + 10) % 360}, 100%, 72%)`
+      <div
+        className="absolute inset-0 rounded-full"
+        style={{
+          ...spectrumStyle,
+          WebkitMask: ringMask,
+          mask: ringMask,
+          transform: `scale(${pulse}) rotate(${wobble}deg)`,
+          filter: 'saturate(1.9) brightness(1.08)',
+          mixBlendMode: 'screen',
+        }}
+      />
 
-          return (
-            <g
-              key={index}
-              transform={`translate(${CENTER} ${CENTER}) rotate(${bar.angle + spiralTwist}) translate(0 ${-(INNER_RADIUS + radialWobble)})`}
-            >
-              <line
-                x1={0}
-                y1={-barHeight}
-                x2={0}
-                y2={0}
-                stroke={glowColor}
-                strokeOpacity={bar.opacity * 0.22}
-                strokeLinecap="round"
-                strokeWidth={BAR_WIDTH * 3.15}
-                filter="url(#hero-waveform-glow)"
-              />
-              <line
-                x1={0}
-                y1={-INNER_RADIUS}
-                x2={0}
-                y2={-INNER_RADIUS - barHeight}
-                stroke={color}
-                strokeOpacity={bar.opacity}
-                strokeLinecap="round"
-                strokeWidth={BAR_WIDTH}
-                style={{ filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.08))' }}
-              />
-            </g>
-          )
-        })}
-      </svg>
+      <div
+        className="absolute inset-0 rounded-full"
+        style={{
+          boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.13)',
+          opacity: isHovered ? 0.78 : 0.52,
+        }}
+      />
     </div>
   )
 }
 
 export default HeroWaveform
+          const spiralTwist = Math.sin(waveTime * 0.35 + index * 0.1) * 4
