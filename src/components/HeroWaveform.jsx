@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 
 const BAR_COUNT = 200
-const BAR_WIDTH = 2.25
+const BAR_WIDTH = 1.8
 const CANVAS_SIZE = 320
 const CENTER = CANVAS_SIZE / 2
-const INNER_RADIUS = 84
+const INNER_RADIUS = 60
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value))
@@ -17,9 +17,9 @@ function HeroWaveform({ isHovered = false, className = '' }) {
     return Array.from({ length: BAR_COUNT }, (_, index) => {
       const progress = index / (BAR_COUNT - 1)
 
-      const baseHeight = 12 + Math.random() * 18
-      const amplitude = 10 + Math.random() * 18
-      const secondaryAmplitude = 3 + Math.random() * 6
+      const baseHeight = 4 + Math.random() * 10
+      const amplitude = 5 + Math.random() * 11
+      const secondaryAmplitude = 2 + Math.random() * 4
       const phase = progress * Math.PI * 2.2 + Math.random() * Math.PI * 2
       const secondaryPhase = Math.random() * Math.PI * 2
       const speed = 0.32 + Math.random() * 0.55
@@ -92,8 +92,8 @@ function HeroWaveform({ isHovered = false, className = '' }) {
           const spiralTwist = Math.sin(waveTime * 0.35 + index * 0.1) * 4
           const barHeight = clamp(
             bar.baseHeight + swell * bar.amplitude * hoverMultiplier + secondarySwell * bar.secondaryAmplitude * hoverMultiplier,
-            8,
-            34,
+            4,
+            18,
           )
           const color = `hsl(${(bar.hue + hueShift) % 360}, 100%, ${isHovered ? 70 : 62}%)`
           const glowColor = `hsl(${(bar.hue + hueShift + 10) % 360}, 100%, 72%)`
