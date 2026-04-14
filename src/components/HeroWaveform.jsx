@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState } from 'react'
 
 const BAR_COUNT = 200
 const BAR_WIDTH = 2.25
-const CANVAS_SIZE = 280
+const CANVAS_SIZE = 320
 const CENTER = CANVAS_SIZE / 2
-const INNER_RADIUS = 96
+const INNER_RADIUS = 108
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value))
@@ -17,15 +17,16 @@ function HeroWaveform({ isHovered = false, className = '' }) {
     return Array.from({ length: BAR_COUNT }, (_, index) => {
       const progress = index / (BAR_COUNT - 1)
 
-      const baseHeight = 8 + Math.random() * 14
-      const amplitude = 7 + Math.random() * 13
-      const secondaryAmplitude = 2 + Math.random() * 6
+      const baseHeight = 10 + Math.random() * 16
+      const amplitude = 10 + Math.random() * 16
+      const secondaryAmplitude = 3 + Math.random() * 6
       const phase = progress * Math.PI * 2.2 + Math.random() * Math.PI * 2
       const secondaryPhase = Math.random() * Math.PI * 2
       const speed = 0.32 + Math.random() * 0.55
       const secondarySpeed = speed * (1.45 + Math.random() * 0.45)
       const opacity = 0.68 + Math.random() * 0.32
       const angle = (index / BAR_COUNT) * 360
+      const hue = (index / BAR_COUNT) * 360
 
       return {
         baseHeight,
@@ -37,6 +38,7 @@ function HeroWaveform({ isHovered = false, className = '' }) {
         secondarySpeed,
         opacity,
         angle,
+        hue,
       }
     })
   }, [])
@@ -77,24 +79,26 @@ function HeroWaveform({ isHovered = false, className = '' }) {
           const hoverMultiplier = isHovered ? 1.12 : 1
           const barHeight = clamp(
             bar.baseHeight + swell * bar.amplitude * hoverMultiplier + secondarySwell * bar.secondaryAmplitude * hoverMultiplier,
-            6,
-            28,
+            8,
+            34,
           )
+          const color = `hsl(${bar.hue}, 100%, 62%)`
 
           return (
             <g
               key={index}
-              transform={`translate(${CENTER} ${CENTER}) rotate(${bar.angle}) translate(0 ${-INNER_RADIUS})`}
+              transform={`translate(${CENTER} ${CENTER}) rotate(${bar.angle})`}
             >
-              <rect
-                x={-BAR_WIDTH / 2}
-                y={-barHeight}
-                width={BAR_WIDTH}
-                height={barHeight}
-                rx="0.35"
-                fill="#1DB954"
-                fillOpacity={bar.opacity}
-                style={{ transition: 'opacity 120ms linear' }}
+              <line
+                x1={0}
+                y1={-INNER_RADIUS}
+                x2={0}
+                y2={-INNER_RADIUS - barHeight}
+                stroke={color}
+                strokeOpacity={bar.opacity}
+                strokeLinecap="round"
+                strokeWidth={BAR_WIDTH}
+                style={{ filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.08))' }}
               />
             </g>
           )
