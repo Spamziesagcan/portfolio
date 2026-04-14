@@ -12,7 +12,6 @@ function clamp(value, min, max) {
 
 function HeroWaveform({ isHovered = false, className = '' }) {
   const [playheadProgress, setPlayheadProgress] = useState(0)
-  const [isIntroDone, setIsIntroDone] = useState(false)
 
   const bars = useMemo(() => {
     return Array.from({ length: BAR_COUNT }, (_, index) => {
@@ -28,9 +27,17 @@ function HeroWaveform({ isHovered = false, className = '' }) {
         1,
       )
 
+      const scaleLow = clamp(0.76 + Math.random() * 0.08, 0.72, 0.86)
+      const scaleHigh = clamp(1.02 + Math.random() * 0.1, 1.02, 1.16)
+
       return {
         height: 12 + Math.round(normalized * 84),
         delay: index * 5,
+        waveDelay: -index * 38,
+        waveDuration: 3600 + Math.random() * 1800,
+        scaleLow,
+        scaleHigh,
+        opacity: 0.75 + Math.random() * 0.25,
       }
     })
   }, [])
@@ -45,13 +52,9 @@ function HeroWaveform({ isHovered = false, className = '' }) {
 
     updatePlayhead()
     const intervalId = window.setInterval(updatePlayhead, 32)
-    const introTimerId = window.setTimeout(() => {
-      setIsIntroDone(true)
-    }, 1400)
 
     return () => {
       window.clearInterval(intervalId)
-      window.clearTimeout(introTimerId)
     }
   }, [])
 
@@ -65,22 +68,23 @@ function HeroWaveform({ isHovered = false, className = '' }) {
       aria-hidden="true"
     >
       <style>{`
-        @keyframes hero-waveform-rise {
-          0% {
-            transform: scaleY(0);
-          }
+        @keyframes hero-waveform-swell {
+          0%,
           100% {
-            transform: scaleY(1);
+            transform: scaleY(var(--wave-scale-low));
+          }
+          50% {
+            transform: scaleY(var(--wave-scale-high));
           }
         }
 
-        @keyframes hero-waveform-pulse {
+        @keyframes hero-waveform-swell-hover {
           0%,
           100% {
-            transform: scaleY(1);
+            transform: scaleY(var(--wave-scale-hover-low));
           }
           50% {
-            transform: scaleY(1.08);
+            transform: scaleY(var(--wave-scale-hover-high));
           }
         }
 
@@ -116,11 +120,14 @@ function HeroWaveform({ isHovered = false, className = '' }) {
               style={{
                 transformBox: 'fill-box',
                 transformOrigin: 'center bottom',
+                '--wave-scale-low': bar.scaleLow,
+                '--wave-scale-high': bar.scaleHigh,
+                '--wave-scale-hover-low': Math.max(0.7, bar.scaleLow - 0.04),
+                '--wave-scale-hover-high': bar.scaleHigh + 0.06,
                 animation: isHovered
-                  ? 'hero-waveform-pulse 1.4s ease-in-out infinite'
-                  : !isIntroDone
-                    ? `hero-waveform-rise 700ms ease-out ${bar.delay}ms forwards`
-                    : 'none',
+                  ? `hero-waveform-swell-hover ${Math.round(bar.waveDuration * 0.82)}ms ease-in-out infinite`
+                  : `hero-waveform-swell ${Math.round(bar.waveDuration)}ms ease-in-out infinite`,
+                animationDelay: `${bar.waveDelay}ms`,
               }}
             />
           )
