@@ -1,16 +1,86 @@
-# React + Vite
+# Spotify Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Spotify-inspired portfolio built with React and Vite. The experience is designed like a music app, with a dark player UI, animated transitions, a custom cursor, and profile sections presented as albums, playlists, and a listening history.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Animated landing page with a waveform hero, greeting, and featured cards.
+- Projects section styled like an album browser with filters, project previews, and external links.
+- Experience section presented as a career timeline with expandable entries.
+- Shared Spotify-like shell with sidebar navigation, mobile bottom nav, player bar, and page transitions.
+- Custom loading screen, top loader, and cursor treatment for a more immersive feel.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19
+- Vite
+- React Router
+- Framer Motion
+- Tailwind CSS
+- Lucide React
+- Wavesurfer.js
+- canvas-confetti
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Prerequisites
+
+- Node.js 18 or newer
+- npm
+
+### Install
+
+```bash
+npm install
+```
+
+### Run locally
+
+```bash
+npm run dev
+```
+
+### Build for production
+
+```bash
+npm run build
+```
+
+### Preview the production build
+
+```bash
+npm run preview
+```
+
+### Lint the codebase
+
+```bash
+npm run lint
+```
+
+## Project Structure
+
+```text
+src/
+	App.jsx
+	main.jsx
+	components/
+	hooks/
+	pages/
+```
+
+## Pages
+
+- Home: profile hero, greeting, and featured highlights.
+- Projects: filterable project library with detailed preview panel.
+- Experience: expandable timeline of roles and achievements.
+- Skills: placeholder Spotify-style skills section.
+- Contact: placeholder contact section.
+
+## Future Scope
+
+The current concept includes a future feature inspired by Spotify Blend: visitors will be able to upload their resume, compare it with the portfolio owner's resume, and receive a compatibility score with a matching tagline based on the percentage.
+
+## Notes
+
+The project is currently styled around placeholder content, so most names, projects, and links should be replaced with real portfolio data before publishing.
